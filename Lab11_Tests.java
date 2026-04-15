@@ -7,10 +7,7 @@ import java.net.*;
 import java.time.*;
 
 public class Lab11_Tests {
-    /*
-        Complete the test case below that checks to see that threads A and B have both contributed 100 entries respectively
-        to the shared ArrayList when they have both finished running.
-    */
+
     @Test
     public void test1() {
         Lab11_Thread threadA = new Lab11_Thread("A1", 100);
@@ -31,18 +28,21 @@ public class Lab11_Tests {
         // Both threads contributed 100 entries each so 200 total
         assertEquals(200, threadA.getData().size());
 
+        // Count how many entries belong to each thread
+        int countA = 0, countB = 0;
+        for (String s : threadA.getData()) {
+            if (s.startsWith("A1")) countA++;
+            if (s.startsWith("B1")) countB++;
+        }
+        assertEquals(100, countA);
+        assertEquals(100, countB);
     }
 
-    /*
-        Complete the test case below that checks to see if the shared ArrayList has at least 10 entries after 500ms of system time
-    */
     @Test
     public void test2() {
-
         Lab11_Thread threadA = new Lab11_Thread("A2", 500);
         Lab11_Thread threadB = new Lab11_Thread("B2", 500);
 
-        // Reset shared static list so other tests don't bleed 
         threadA.setData(new ArrayList<String>());
 
         threadA.start();
@@ -54,22 +54,15 @@ public class Lab11_Tests {
             e.printStackTrace();
         }
 
-        // Each thread sleeps 50ms per entry, so after 500ms each should have added ~10
-        // Combined they should have at least 10 entries
+        // Each thread sleeps 50ms per entry, so after 500ms ~10 entries per thread
         assertTrue(threadA.getData().size() >= 10);
-
     }
 
-    /*
-        Complete the test case below that checks to see if thread A finishes adding its 10 entries before thread B was allowed to 
-        add anything to the shared ArrayList
-    */
     @Test
     public void test3() {
         Lab11_Thread threadA = new Lab11_Thread("A3", 10);
         Lab11_Thread threadB = new Lab11_Thread("B3", 10);
 
-        // Reset shared static list so other tests don't bleed in
         threadA.setData(new ArrayList<String>());
 
         threadA.start();
@@ -80,7 +73,8 @@ public class Lab11_Tests {
             e.printStackTrace();
         }
 
-        // first 10 entries must all belong to A3
+        // After A joins, all 10 entries so far must belong to A3
+        assertEquals(10, threadA.getData().size());
         for (int i = 0; i < 10; i++) {
             assertTrue(threadA.getData().get(i).startsWith("A3"));
         }
