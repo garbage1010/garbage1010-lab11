@@ -15,8 +15,20 @@ public class Lab11_Tests {
         Lab11_Thread threadA = new Lab11_Thread("A1", 100);
         Lab11_Thread threadB = new Lab11_Thread("B1", 100);
 
+        threadA.setData(new ArrayList<String>());
+
         threadA.start();
         threadB.start();
+
+        try {
+            threadA.join();
+            threadB.join();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Both threads contributed 100 entries each so 200 total
+        assertEquals(200, threadA.getData().size());
 
     }
 
