@@ -25,10 +25,8 @@ public class Lab11_Tests {
             e.printStackTrace();
         }
 
-        // Both threads contributed 100 entries each so 200 total
         assertEquals(200, threadA.getData().size());
 
-        // Count how many entries belong to each thread
         int countA = 0, countB = 0;
         for (String s : threadA.getData()) {
             if (s.startsWith("A1")) countA++;
@@ -54,8 +52,18 @@ public class Lab11_Tests {
             e.printStackTrace();
         }
 
-        // Each thread sleeps 50ms per entry, so after 500ms ~10 entries per thread
         assertTrue(threadA.getData().size() >= 10);
+
+        // Stop the threads from bleeding into other tests
+        threadA.interrupt();
+        threadB.interrupt();
+
+        try {
+            threadA.join();
+            threadB.join();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -73,7 +81,6 @@ public class Lab11_Tests {
             e.printStackTrace();
         }
 
-        // After A joins, all 10 entries so far must belong to A3
         assertEquals(10, threadA.getData().size());
         for (int i = 0; i < 10; i++) {
             assertTrue(threadA.getData().get(i).startsWith("A3"));
@@ -87,7 +94,6 @@ public class Lab11_Tests {
             e.printStackTrace();
         }
 
-        // After B finishes, total should be 20
         assertEquals(20, threadA.getData().size());
     }
 }
